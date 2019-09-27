@@ -10,7 +10,7 @@ x <- cbind(matrix(1, nrow = n, ncol = 1), x) # add constant term
 m <- ncol(x)
 theta <- matrix(c(0, 1, 1, 0), ncol = 1)
 y <- x %*% theta + rnorm(n)
-g <- 0.348
+g <- nrow(x)
 a <- .1
 b <- .1
 
@@ -24,7 +24,8 @@ for (k in 2:m^2) {
   gamma_k <- gammas[k,]
   df[k, "modelid"] <- paste(c(1,2,3,4)[gamma_k], collapse=",")
   Z <- x[, gamma_k]
-  V0 <- t(Z) %*% Z
+  V0 <- diag(sum(gamma_k))
+  V0 <- solve(t(Z) %*% Z)
   model_like <- log_p_y_given_gam(y, Z=Z, V0=V0, g=g, a=a, b=b)
   model_prior <- (extraDistr::dbbinom(sum(gamma_k), m^2, 1, 1, log=TRUE) -
                   log(sum(covariates_count == sum(gamma_k))))
@@ -51,5 +52,6 @@ fit1 <- modelSelection(y = y, x = x, priorCoef = priorCoef, priorDelta = priorDe
 # Posterior model probabilities
 post <- postProb(fit1)
 post <- post[order(as.numeric(rownames(post))), ]
+df[, "pp_mombf"] <- post[, "pp"][2:m^2]
 df[, "pp_mombf"] <- exp(log(post[, "pp"]) - max(log(post[, "pp"])))[2:m^2]
 df
