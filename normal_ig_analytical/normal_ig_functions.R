@@ -1,21 +1,8 @@
-source("integrate_2D.R")
-
-###########################
-# define parameters used  #
-###########################
-n <- 10
-m <- 1
-y <- matrix(rnorm(n))
-Z <- matrix(rnorm(n * m), nrow = n, ncol = m)
-V0 <- diag(m)
-g <- 2
-a <- 6
-b <- 4
-
-###########################
-# use analytical solution #
-###########################
+# Analytical marginal posterior probability
 log_p_y_given_gam <- function(y, Z, V0, g, a, b) {
+  # returns the posterior probability of y given gamma
+  # gamma is the model identifier, which must be taken
+  # into account when setting inputs Z and V0
   n <- length(y)
   m <- nrow(V0)
   V <- t(Z) %*% Z + solve(V0) / g
@@ -30,12 +17,7 @@ log_p_y_given_gam <- function(y, Z, V0, g, a, b) {
   const + const_gam + dets + last_term
 }
 
-exp(log_p_y_given_gam(y, Z, V0, g, a, b)[1])
-
-###########################
-# use numerical approach  #
-###########################
-# use numerical integration (in 2D) to check analytical result
+# formulae for the joint posterior probability
 log_joint_p_1d <- function(theta, phi, y, Z, V0, g, a, b) {
   n <- length(y)
   m <- nrow(V0)
@@ -51,5 +33,3 @@ log_joint_p_1d <- function(theta, phi, y, Z, V0, g, a, b) {
 joint_p_1d <- function(theta, phi, y, Z, V0, g, a, b) {
   exp(log_joint_p_1d(theta, phi, y, Z, V0, g, a, b))
 }
-
-integrate2(joint_p_1d, lower = c(-Inf, 0), upper = c(Inf, Inf), y = y, Z = Z, V0 = V0, g = g, a = a, b = b)[1]
