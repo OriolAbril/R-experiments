@@ -37,3 +37,7 @@ rsconnect/
 
 # R jupyter notebooks
 .ipynb_checkpoints/*
+
+# cache (from stan)
+*.rda
+*.rds
