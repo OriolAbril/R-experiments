@@ -47,7 +47,3 @@ log_post_theta_phi <- function(theta, phi, y, Z, V0, g, a, b) {
   norm_term <- mvtnorm::dmvnorm(theta, m, phi * V, log = TRUE)
   norm_term + ig_term
 }
-
-post_theta_phi <- function(theta, phi, y, Z, V0, g, a, b) {
-  log_post_theta_phi(theta, phi, y, Z, V0, g, a, b)
-}
