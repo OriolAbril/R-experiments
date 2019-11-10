@@ -1,5 +1,4 @@
 library("rstan")
-source("../integrate_2D.R")
 source("normal_ig_functions.R")
 
 set.seed(14)
