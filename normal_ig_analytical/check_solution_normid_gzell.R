@@ -28,6 +28,8 @@ log_p_y_given_gam(y, Z, V0, g, a, b)[1]
 nlpMarginal(seq(m), y, Z, priorCoef=normalidprior(tau=g),
             priorGroup=groupzellnerprior(tau=g), priorVar=igprior(a,b), groups=c(1,2,3,4,4))
 
+fit <- modelSelection(y,Z, priorCoef=normalidprior(tau=g), priorGroup=groupzellnerprior(tau=g), priorVar=igprior(a,b), groups=c(1,2,3,4,4))
+print(postProb(fit))
 
 ### Second case ##########################
 cat("\nSecond case\n")
@@ -62,4 +64,6 @@ log_p_y_given_gam(y, Z, V0, g, a, b)[1]
 nlpMarginal(seq(m), y, Z, priorCoef=normalidprior(tau=tau),
             priorGroup=groupzellnerprior(tau=taugroup), priorVar=igprior(a,b), groups=c(1,2,3,3,3,4,4))
 
-
+fit <- modelSelection(y, Z, priorCoef=normalidprior(tau=tau),
+            priorGroup=groupzellnerprior(tau=taugroup), priorVar=igprior(a,b), groups=c(1,2,3,3,3,4,4))
+print(postProb(fit))
