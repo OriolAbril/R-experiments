@@ -16,7 +16,7 @@ zellner_V0 <- solve(ZtZ[no_group_idx, no_group_idx])
 V0[no_group_idx, no_group_idx] <- zellner_V0
 group_idx <- c(4,5)
 zellner_V0 <- solve(ZtZ[group_idx, group_idx])
-V0[group_idx, group_idx] <- zellner_V0
+V0[group_idx, group_idx] <- zellner_V0 / length(group_idx)
 g <- .3
 a <- .1
 b <- .1
@@ -52,11 +52,11 @@ V0[no_group_idx, no_group_idx] <- zellner_coef*tau
 group_idx1 <- c(3,4,5)
 Z_aux1 <- Z[, group_idx1]
 zellner_V01 <- solve(t(Z_aux1) %*% Z_aux1)
-V0[group_idx1, group_idx1] <- zellner_V01*taugroup
+V0[group_idx1, group_idx1] <- zellner_V01*taugroup/length(group_idx1)
 group_idx2 <- c(6,7)
 Z_aux2 <- Z[, group_idx2]
 zellner_V02 <- solve(t(Z_aux2) %*% Z_aux2)
-V0[group_idx2, group_idx2] <- zellner_V02*taugroup
+V0[group_idx2, group_idx2] <- zellner_V02*taugroup/length(group_idx2)
 g <- 1
 a <- .1
 b <- .1
