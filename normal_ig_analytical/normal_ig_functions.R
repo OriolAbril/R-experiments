@@ -51,14 +51,14 @@ log_post_theta_phi <- function(theta, phi, y, Z, V0, g, a, b) {
 make_group_zellner_matrix <- function(Z, V0, taugroup, group_indexs) {
   for (group_idx in group_indexs) {
     Z_aux <- Z[, group_idx]
-    zellner_V0 <- solve(t(Z_aux) %*% Z_aux) / length(group_idx)
+    zellner_V0 <- solve(t(Z_aux) %*% Z_aux)
     V0[group_idx, group_idx] <- zellner_V0 * taugroup
   }
   return(V0)
 }
 
 # Orthogonal approx marginal posterior probability (gmom only)
-log_p_y_given_gam_gmom <- function(y, Z, V0, g, a, b, group_indexs) {
+log_p_y_given_gam_gmom <- function(y, Z, V0, g, a, b, group_indexs, p_j) {
   # returns the posterior probability of y given gamma
   # gamma is the model identifier, which must be taken
   # into account when setting inputs Z and V0
@@ -79,13 +79,24 @@ log_p_y_given_gam_gmom <- function(y, Z, V0, g, a, b, group_indexs) {
   m_vec <- Sinv %*% Zty
   last_term <- -a_hat * log(b_hat)
   norm_marg_like <- (const + const_gam + dets + last_term)[1]
+  print(paste("gzell: ", norm_marg_like))
+  V0_1 <- V0_1 / p_j
+  nu = as.integer(a_hat * 2)
+  print(paste("term1:", b_hat/(nu-2)))
+  print(paste("b_hat:", b_hat))
   for (group_idx in group_indexs) {
     W_j <- V0_1[group_idx, group_idx]
     S_j <- Sinv[group_idx, group_idx]
     m_j <- m_vec[group_idx]
     trace <- sum(diag(S_j %*% W_j))
-    nu = as.integer(a_hat * 2)
     mm <- (nu - 2)/b_hat*t(m_j)%*%W_j%*%m_j
+    aux <- g*length(group_idx) / (length(group_idx) +2)
+    W_aux <- W_j / aux
+    # print((nu - 2)/b_hat*t(m_j)%*%W_aux%*%m_j)
+    # print(aux)
+    print(paste("trace:", trace[1]))
+    print(paste("aux:", t(m_j)%*%W_j%*%m_j))
+    print(log(trace[1] + mm[1]))
     norm_marg_like <- norm_marg_like + log(trace[1] + mm[1])
   }
   return(norm_marg_like)
